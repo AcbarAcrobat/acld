@@ -1,0 +1,13 @@
+{
+    "chrome": {
+        "default": "81.0",
+        "versions": {
+            "81.0": {
+                "image": "selenoid/vnc_chrome:81.0",
+                "port": "4444",
+                "path": "/",
+                "env" : ["TZ=Europe/Moscow", "ENABLE_WINDOW_MANAGER=1"]
+            }
+        }
+    }
+}
