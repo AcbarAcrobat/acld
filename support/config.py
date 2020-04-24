@@ -4,7 +4,7 @@ from pathlib import Path
 
 root_dir = Path(os.getcwd())
 
-with Path.open(root_dir.joinpath('config.yml')) as f:
+with Path.open(root_dir.joinpath('settings.yml')) as f:
     data = f.read()
 
 _config = yaml.safe_load(data)

@@ -1,0 +1,3 @@
+Level 61 PRINT:fixtures.py:28 
+[1m[35mTestDummy: [0m[1m[37mTest login[0m
+Level 61 PRINT:fixtures.py:29 [33mScenario --[0m
