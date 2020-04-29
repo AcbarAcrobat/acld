@@ -1,6 +1,7 @@
 import pytest
 from wasd.wd import Browser
 from wasd.core import SettingsManager as Conf
+from faker import Faker
 
 
 # Define custom action here
@@ -10,6 +11,11 @@ from page.home_page import HomePage
 class MyExtendedBrowser(Browser):
     def my_super_fn(self):
         print('Hello, World!')
+
+
+@pytest.fixture(scope='session')
+def faker():
+    return Faker('ru_RU')
 
 
 @pytest.fixture(scope='session')
