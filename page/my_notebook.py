@@ -1,6 +1,6 @@
-from page.base_page import BasePage
-from wasd.wd import Element as E
 from wasd.util import Locator
+from page.base_page import BasePage
+from wasd.wd import Element as E, ShadowElement
 
 
 class MyNotebooks(BasePage):
@@ -13,38 +13,31 @@ class MyNotebooks(BasePage):
     Подключиться к нотбуку
     '''
 
-    URL = "_/jupyter/"
-
+    URL = "/"
+    main_page = ShadowElement('main-page')
+    app_drawer_layout = ShadowElement('app-drawer-layout', main_page)
+    iframe_container = ShadowElement('iframe-container', main_page)
+    iframe = E("#iframe", iframe_container)
     create_button = E("#add-nb")
     notebook_row = E(".mat-row")
     connect_button = E(".mat-button")
     name_field = E("[formcontrolname = 'name']")
     submit_button = E("[type='submit']")
-    iframe = E("#iframe")
-    table = E("app-resource-table table")
+    table = E(".mat-table")
     table_row = E(".mat-row", table)
     f_init = E("[role='gridcell']")
-    header = E(".header")
+    select_gpu = E("#mat-select-1")
+    options8 = E(".mat-option .mat-option-text")
 
     def switch_to_iframe(self):
         b = self.browser
         b.switch_to_iframe(self.iframe)
-
-    def wait_header(self):
-        b = self.browser
-        b.wait_for_element_visible(self.header, 5)
+        b.sleep(2)
 
     def create_notebook(self):
         b = self.browser
-        self.wait_header()
-        self.switch_to_iframe()
-        b.click(self.create_button)
-        self.validate_name_field()
-
-    def validate_name_field(self):
-        b = self.browser
-        self.switch_to_iframe()
-        b.wait_for_element_visible(self.name_field, 5)
+        b.switch_to_iframe(self.iframe)
+        b.js_click(self.create_button)
 
     def fill_name(self, name):
         b = self.browser
@@ -56,6 +49,7 @@ class MyNotebooks(BasePage):
 
     def table_count(self):
         b = self.browser
+        self.switch_to_iframe()
         l = len(b.grab_multiple(self.table_row))
         b.switch_to_iframe()
         return l
@@ -63,6 +57,11 @@ class MyNotebooks(BasePage):
     def validate_created_notebook(self, notebook_name):
         b = self.browser
         b.see_element(E(Locator.contains(".mat-cell", notebook_name)))
+
+    def select_type(self):
+        b = self.browser
+        b.click(self.select_type)
+        b.click(self.options8)
 
     def finish_init(self):
         b = self.browser

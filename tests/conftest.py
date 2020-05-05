@@ -2,8 +2,6 @@ import pytest
 from wasd.wd import Browser
 from wasd.core import SettingsManager as Conf
 from faker import Faker
-
-
 # Define custom action here
 from page.home_page import HomePage
 

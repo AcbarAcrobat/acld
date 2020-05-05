@@ -11,13 +11,11 @@ class HomePage(BasePage):
     password_field  = E("#password", login_form)
     login_button    = E("#kc-login", login_form)
 
-
     def login(self, username, password):
         b = self.browser
         b.fill_field(self.username_field, username)
         b.fill_field(self.password_field, password)
         b.click(self.login_button)
-
 
     def validate(self):
         b = self.browser
