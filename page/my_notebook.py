@@ -26,13 +26,17 @@ class MyNotebooks(BasePage):
     table = E(".mat-table")
     table_row = E(".mat-row", table)
     f_init = E("[role='gridcell']")
-    select_gpu = E("#mat-select-1")
-    options8 = E(".mat-option .mat-option-text")
+    drop_down_options = E(".mat-select-value")
+    select_opt = E(Locator.contains('.mat-option'))
+
+    # def connect_to(self):
+    #     b=self.browser
+    #     b.find_element("[role='gridcell']")
+    #     delete_notebook = E(Locator.contains("tr.td", ))
 
     def switch_to_iframe(self):
         b = self.browser
         b.switch_to_iframe(self.iframe)
-        b.sleep(2)
 
     def create_notebook(self):
         b = self.browser
@@ -45,7 +49,7 @@ class MyNotebooks(BasePage):
 
     def submit_create(self):
         b = self.browser
-        b.click(self.submit_button)
+        b.js_click(self.submit_button)
 
     def table_count(self):
         b = self.browser
@@ -60,8 +64,8 @@ class MyNotebooks(BasePage):
 
     def select_type(self):
         b = self.browser
-        b.click(self.select_type)
-        b.click(self.options8)
+        b.js_click(self.drop_down_options)
+        b.js_click(self.select_opt)
 
     def finish_init(self):
         b = self.browser
