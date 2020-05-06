@@ -1,5 +1,4 @@
 wasd
-pytest_testconfig
 pytest
 Faker==4.0.3
 pytruth==1.1.0
