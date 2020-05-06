@@ -3,7 +3,7 @@ from truth.truth import AssertThat
 from page.my_notebook import MyNotebooks
 
 
-class AiCloudTests:
+class TestNotebooks:
 
     @pytest.mark.want_to('Create Notebook')
     def test_create_notebook(self, browser, faker):
@@ -19,3 +19,5 @@ class AiCloudTests:
         ftr = page.table_count()
         AssertThat(ftr).IsEqualTo(tr + 1)
         page.validate_created_notebook(notebook_name)
+        page.connect_to_notebook(notebook_name)
+        page.upload_to_nfs()

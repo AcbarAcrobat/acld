@@ -1,5 +1,6 @@
 import pytest
-from wasd.wd import Browser
+from selenium.webdriver.remote.file_detector import LocalFileDetector
+from wasd.wd import Browser, Element as E
 from wasd.core import SettingsManager as Conf
 from faker import Faker
 # Define custom action here
@@ -7,9 +8,12 @@ from page.home_page import HomePage
 
 
 class MyExtendedBrowser(Browser):
-    def my_super_fn(self):
-        print('Hello, World!')
+    def upload_file(self, input_elm, path_to):
+        self._driver_instance.file_detector = LocalFileDetector()
+        self.fill_field(input_elm, path_to)
 
+    def upload_to_s3(self):
+        pass
 
 @pytest.fixture(scope='session')
 def faker():
