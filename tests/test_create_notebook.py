@@ -21,3 +21,4 @@ class TestNotebooks:
         page.validate_created_notebook(notebook_name)
         page.connect_to_notebook(notebook_name)
         page.upload_to_nfs()
+        page.start_job()

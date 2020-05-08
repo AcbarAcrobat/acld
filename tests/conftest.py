@@ -15,6 +15,11 @@ class MyExtendedBrowser(Browser):
     def upload_to_s3(self):
         pass
 
+    def switch_to_window(self):
+        windows_after = self._driver_instance.window_handles[1]
+        self._driver_instance.switch_to.window(windows_after)
+
+
 @pytest.fixture(scope='session')
 def faker():
     return Faker('ru_RU')

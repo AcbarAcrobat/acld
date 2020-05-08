@@ -2,6 +2,8 @@ from wasd.util import Locator
 from page.base_page import BasePage
 from wasd.wd import Element as E, ShadowElement
 from wasd.core import session
+import re
+
 
 class MyNotebooks(BasePage):
     '''
@@ -29,8 +31,8 @@ class MyNotebooks(BasePage):
     drop_down_options = E(".mat-select-value")
     select_opt = E(Locator.contains('.mat-option'))
     delete_btn = E(Locator.contains("button", "delete"))
-    upload_button_nfs = E("input.fileinput")
-    confirm_upload_button = E("button.upload_button")
+    upload_button_jup = E("input.fileinput")
+    confirm_upload_file = E("button.upload_button")
     loader = E("mat-spinner")
 
     def t_row(self, notebook_name):
@@ -84,15 +86,17 @@ class MyNotebooks(BasePage):
         b = self.browser
         b.wait_for_element_not_visible(self.loader)
         tr = self.t_row(notebook_name)
+        b.sleep(20)
         b.js_click(E(self.connect_button, tr))
 
     def upload_to_nfs(self):
         b = self.browser
-        self.switch_to_iframe()
+        # self.switch_to_iframe()
         files = session.root_dir.joinpath("files", "test_file.ipynb")
-        b.upload_file(str(files))
-        b.js_click(self.confirm_upload_button)
-        self.wait_upload_file(str(files))
+        b.upload_file(self.upload_button_jup, str(files))
+        b.wait_for_element_visible(self.confirm_upload_file)
+        b.js_click(self.confirm_upload_file)
+        self.wait_upload_file("test_file.ipynb")
 
     def wait_upload_file(self, elm_name):
         b = self.browser
@@ -103,7 +107,20 @@ class MyNotebooks(BasePage):
         pass
 
     def start_job(self):
-        pass
+        b = self.browser
+        job = E(Locator.contains(".item_link", "test_file.ipynb"))
+        b.js_click(job)
+        b.sleep(5)
+        b.switch_to_window()
+        b.js_click(E("#run_all_cells"))
+        b.wait_for_element_visible(E(Locator.contains(".output_wrapper", "Out[14]")), 20)
+        a = b.grab_text_from(E(Locator.element_at(".cell .output_result", -1)))
+        v = self.parse_regexp(a)
+        print(v)
+
+    def parse_regexp(self, text):
+        r = re.search('"(.+)"', text)
+        return r.group(1)
 
     def check_job_in_list(self):
         pass

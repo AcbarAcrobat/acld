@@ -1,6 +1,6 @@
 # web driver
 url: 'https://aicloud.sbercloud.ru'
-implicit_timeout: 5
+implicit_timeout: 20
 window_size: 'maximize'
 
 # grid / selenoid
