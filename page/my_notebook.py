@@ -1,19 +1,11 @@
+from selenium.common.exceptions import TimeoutException
 from wasd.util import Locator
 from page.base_page import BasePage
 from wasd.wd import Element as E, ShadowElement
-from wasd.core import session
 import re
 
 
 class MyNotebooks(BasePage):
-    '''
-    Свичнуться в iframe
-    Создать ноутбук
-    Ввести название
-    Убедиться, что ноутбук появился в списке
-    Дождаться инициализации
-    Подключиться к нотбуку
-    '''
 
     URL = "/"
     main_page = ShadowElement('main-page')
@@ -34,8 +26,11 @@ class MyNotebooks(BasePage):
     upload_button_jup = E("input.fileinput")
     confirm_upload_file = E("button.upload_button")
     loader = E("mat-spinner")
+    my_job_table = E(".table-bordered")
+    job_table = E("table#mon-table")
 
-    def t_row(self, notebook_name):
+    @staticmethod
+    def t_row(notebook_name):
         return E(Locator.contains(".mat-row", notebook_name))
 
     def switch_to_iframe(self):
@@ -91,9 +86,7 @@ class MyNotebooks(BasePage):
 
     def upload_to_nfs(self):
         b = self.browser
-        # self.switch_to_iframe()
-        files = session.root_dir.joinpath("files", "test_file.ipynb")
-        b.upload_file(self.upload_button_jup, str(files))
+        b.attach_file(self.upload_button_jup, "test_file.ipynb")
         b.wait_for_element_visible(self.confirm_upload_file)
         b.js_click(self.confirm_upload_file)
         self.wait_upload_file("test_file.ipynb")
@@ -116,14 +109,37 @@ class MyNotebooks(BasePage):
         b.wait_for_element_visible(E(Locator.contains(".output_wrapper", "Out[14]")), 20)
         a = b.grab_text_from(E(Locator.element_at(".cell .output_result", -1)))
         v = self.parse_regexp(a)
-        print(v)
+        return v
 
-    def parse_regexp(self, text):
+    @staticmethod
+    def parse_regexp(text):
         r = re.search('"(.+)"', text)
         return r.group(1)
 
     def check_job_in_list(self):
-        pass
+        b = self.browser
+        b.open("_/monitoring/")
+        self.switch_to_iframe()
+
+    def wait_with_refresh(self, text, attempts=20, timeout=10):
+        b = self.browser
+        row = E(Locator.contains("[role='row']", text), self.job_table)
+
+        for i in range(attempts):
+            try:
+                b.wd_wait(timeout).until(
+                    lambda wd: len(b.grab_visible(row)) > 0
+                )
+                return row
+            except TimeoutException:
+                b.refresh()
+                self.switch_to_iframe()
+                b.sleep(1)
+                continue
+
+        raise TimeoutException(
+            f"Waited for {attempts} attempts ({timeout} seconds each) "
+            f"but text `{text}` still not found")
 
     def s3_to_nfs(self):
         pass
