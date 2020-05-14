@@ -28,9 +28,11 @@ class MyNotebooks(BasePage):
     loader = E("mat-spinner")
     my_job_table = E(".table-bordered")
     job_table = E("table#mon-table")
+    jupiter_trash = E(".fa-trash")
+    modal_dialog = E('.modal-dialog')
+    submit_delete_file = E(".btn-danger", modal_dialog)
 
-    @staticmethod
-    def t_row(notebook_name):
+    def t_row(self, notebook_name):
         return E(Locator.contains(".mat-row", notebook_name))
 
     def switch_to_iframe(self):
@@ -72,16 +74,11 @@ class MyNotebooks(BasePage):
         b = self.browser
         b.wait_for_element_visible(self.f_init, 15)
 
-    def delete_notebook(self, notebook_name):
-        b = self.browser
-        d = self.t_row(notebook_name)
-        b.js_click(self.delete_btn, d)
-
-    def connect_to_notebook(self, notebook_name):
+    def connect_to_notebook(self, notebook_name, timeout):
         b = self.browser
         b.wait_for_element_not_visible(self.loader)
         tr = self.t_row(notebook_name)
-        b.sleep(20)
+        b.sleep(timeout)
         b.js_click(E(self.connect_button, tr))
 
     def upload_to_nfs(self):
@@ -96,8 +93,13 @@ class MyNotebooks(BasePage):
         elm = E(Locator.contains(".list_item", elm_name))
         b.wait_for_element_visible(elm, 15)
 
-    def delete_from_nfs(self):
-        pass
+    def delete_nfs_file(self):
+        b = self.browser
+        item = E(Locator.contains('.list_item', 'test_file.ipynb'))
+        b.js_click(item)
+        b.js_click(self.jupiter_trash)
+        b.wait_for_element_visible(self.modal_dialog)
+        b.js_click(self.submit_delete_file)
 
     def start_job(self):
         b = self.browser
@@ -143,3 +145,9 @@ class MyNotebooks(BasePage):
 
     def s3_to_nfs(self):
         pass
+
+    def del_notebook(self, name):
+        b = self.browser
+        b.js_click(E(self.delete_btn, self.t_row(name)))
+        b.js_click(E(Locator.contains('button', 'УДАЛИТЬ'), E('app-confirm-dialog')))
+        b.wait_for_element_not_visible(self.loader, 15)
