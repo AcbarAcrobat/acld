@@ -1,10 +1,11 @@
 import pytest
 from selenium.webdriver.remote.file_detector import LocalFileDetector
-from wasd.wd import Browser, Element as E
+from wasd.wd import Browser
 from wasd.core import SettingsManager as Conf
 from faker import Faker
 # Define custom action here
-from page.home_page import HomePage
+from page.home import HomePage
+from contextlib import contextmanager
 
 
 class MyExtendedBrowser(Browser):
@@ -18,6 +19,17 @@ class MyExtendedBrowser(Browser):
     def switch_to_window(self):
         windows_after = self._driver_instance.window_handles[1]
         self._driver_instance.switch_to.window(windows_after)
+
+    @contextmanager
+    def in_frame(self, frame):
+        try:
+            self.sleep(0.5)
+            self.switch_to_iframe()
+            self.switch_to_iframe(frame)
+            yield
+        finally:
+            self.sleep(0.5)
+            self.switch_to_iframe()
 
 
 @pytest.fixture(scope='session')
