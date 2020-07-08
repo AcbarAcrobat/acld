@@ -1,5 +1,6 @@
 # web driver
-url: 'https://aicloud.sbercloud.ru'
+#url: 'https://aicloud.sbercloud.ru'
+url: 'http://test.aicloud.sbercloud.ru/'
 implicit_timeout: 5
 window_size: 'maximize'
 
