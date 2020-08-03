@@ -9,9 +9,9 @@ from contextlib import contextmanager
 
 
 class MyExtendedBrowser(Browser):
-    def upload_file(self, input_elm, path_to):
-        self._driver_instance.file_detector = LocalFileDetector()
-        self.fill_field(input_elm, path_to)
+    # def upload_file(self, input_elm, path_to):
+    #     self._driver_instance.file_detector = LocalFileDetector()
+    #     self.fill_field(input_elm, path_to)
 
     def upload_to_s3(self):
         pass
@@ -19,6 +19,10 @@ class MyExtendedBrowser(Browser):
     def switch_to_window(self):
         windows_after = self._driver_instance.window_handles[1]
         self._driver_instance.switch_to.window(windows_after)
+
+    def set_style(self, element, style, value):
+        script = f"arguments[0].style.setProperty('{style}', '{value}', 'important')"
+        self.execute_js(script, self._match_first_or_fail(element))
 
     @contextmanager
     def in_frame(self, frame):
@@ -40,6 +44,7 @@ def faker():
 @pytest.fixture(scope='session')
 def _browser(request):
     b = MyExtendedBrowser()
+    assert isinstance(b, Browser)
     home_page = HomePage(b)
     home_page.navigate()
     home_page.login(Conf.get("username"), Conf.get("password"))

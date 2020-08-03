@@ -20,7 +20,7 @@ class JupyterPage(BasePage):
     def upload_to_nfs(self):
         b = self.browser
         with b.in_frame(self.iframe):
-            b.attach_file(self.UPLOAD_BUTTON, "test_file.ipynb")
+            b.attach_file(self.UPLOAD_BUTTON, "ska.ipynb")
             b.wait_for_element_visible(self.CONFIRM_UPLOAD_FILE)
             b.js_click(self.CONFIRM_UPLOAD_FILE)
             self.wait_upload_file("test_file.ipynb")
@@ -34,7 +34,7 @@ class JupyterPage(BasePage):
     def delete_nfs_file(self):
         b = self.browser
         with b.in_frame(self.iframe):
-            item = E(Locator.contains('.list_item', 'test_file.ipynb'))
+            item = E(Locator.contains('.list_item', 'ska.ipynb'))
             b.js_click(item)
             b.js_click(self.jupiter_trash)
             b.wait_for_element_visible(self.modal_dialog)

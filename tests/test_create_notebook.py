@@ -4,6 +4,7 @@ from page.my_notebooks import MyNotebooks
 
 from page.jupyter import JupyterPage
 from page.my_tasks import MyTasks
+from page.s3 import S3
 
 
 class TestNotebooks:
@@ -13,6 +14,8 @@ class TestNotebooks:
         notebooks = MyNotebooks(browser)
         jupyter = JupyterPage(browser)
         tasks = MyTasks(browser)
+        s3 = S3(browser)
+        browser.sleep(3)
         notebooks.navigate()
         count_before = notebooks.table_count()
         notebooks.create_notebook()
@@ -24,7 +27,7 @@ class TestNotebooks:
         count_after = notebooks.table_count()
         AssertThat(count_after).IsEqualTo(count_before + 1)
         notebooks.validate_created_notebook(notebook_name)
-        notebooks.connect_to_notebook(notebook_name, timeout=20)
+        notebooks.connect_to_notebook(notebook_name, timeout=35)
         jupyter.upload_to_nfs()
         p = jupyter.start_job()
         tasks.check_job_in_list()
@@ -34,4 +37,10 @@ class TestNotebooks:
         jupyter.delete_nfs_file()
         notebooks.navigate()
         notebooks.del_notebook(notebook_name)
+        browser.sleep(5)
         AssertThat(count_before).IsEqualTo(notebooks.table_count())
+        s3.navigate()
+        s3.add_bucket()
+        s3.upload_to_s3()
+        s3.submit_upload()
+        browser.sleep(5)

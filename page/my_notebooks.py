@@ -5,7 +5,7 @@ from wasd.wd import Element as E, ShadowElement
 
 class MyNotebooks(BasePage):
 
-    URL = "/"
+    URL = "/_/jupyter/"
     main_page = ShadowElement('main-page')
     app_drawer_layout = ShadowElement('app-drawer-layout', main_page)
     iframe_container = ShadowElement('iframe-container', main_page)
@@ -20,7 +20,7 @@ class MyNotebooks(BasePage):
     NOTEBOOK_OPTIONS = E(".mat-select-value")
     SELECT_OPTIONS = E(Locator.contains('.mat-option'))
     DELETE_BTN = E(Locator.contains("button", "delete"))
-    loader = E("mat-spinner")
+    PRELOADER = E("mat-spinner")
     my_job_table = E(".table-bordered")
     job_table = E("table#mon-table")
     jupiter_trash = E(".fa-trash")
@@ -30,7 +30,7 @@ class MyNotebooks(BasePage):
     def validate(self):
         b = self.browser
         with b.in_frame(self.iframe):
-            b.wait_for_element_visible(self.TABLE_ROW)
+            b.wait_for_element_visible(self.TABLE)
 
     def notebook_row(self, notebook_name):
         return E(Locator.contains(self.TABLE_ROW.val, notebook_name))
@@ -43,6 +43,7 @@ class MyNotebooks(BasePage):
     def fill_name(self, name):
         b = self.browser
         with b.in_frame(self.iframe):
+            b.sleep(2)
             b.fill_field(self.name_field, name)
 
     def submit_create(self):
@@ -53,6 +54,7 @@ class MyNotebooks(BasePage):
     def table_count(self):
         b = self.browser
         with b.in_frame(self.iframe):
+            b.sleep(1)
             l = len(b.grab_multiple(self.TABLE_ROW))
             return l
 
@@ -69,12 +71,13 @@ class MyNotebooks(BasePage):
 
     def finish_init(self):
         b = self.browser
-        b.wait_for_element_not_visible(self.loader, 10)
+        with b.in_frame(self.iframe):
+            b.wait_for_element_not_visible(self.PRELOADER, 10)
 
     def connect_to_notebook(self, notebook_name, timeout):
         b = self.browser
         with b.in_frame(self.iframe):
-            b.wait_for_element_not_visible(self.loader)
+            b.wait_for_element_not_visible(self.PRELOADER)
             tr = self.notebook_row(notebook_name)
             b.sleep(timeout)
             b.js_click(E(self.connect_button, tr))
@@ -87,5 +90,5 @@ class MyNotebooks(BasePage):
         with b.in_frame(self.iframe):
             b.js_click(E(self.DELETE_BTN, self.notebook_row(name)))
             b.js_click(E(Locator.contains('button', 'УДАЛИТЬ'), E('app-confirm-dialog')))
-            b.wait_for_element_not_visible(self.loader, 15)
-            b.sleep(1)
+            b.wait_for_element_not_visible(self.PRELOADER, 15)
+            b.sleep(10)

@@ -1,5 +1,5 @@
 # web driver
-url: 'https://aicloud.sbercloud.ru'
+url: 'https://aicloud.sbercloud.ru/'
 implicit_timeout: 20
 window_size: 'maximize'
 
@@ -23,3 +23,11 @@ capabilities:
         browser: 'INFO'
     chromeOptions:
         args: ['--disable-infobars']
+
+
+# creds
+creds:
+    namespace: '2f77d0b2-c4e7-4c2c-866f-0f9656a01c95-namespace'
+    bucket:    '45bd22b3-678f-4ef2-a629-6f5a1b5de94a-bucket'
+    accesskey: '5c85fb20-4b40-4247-a42f-16fd072e7de6'
+    secretkey: 'y9pRIisCyZyfseHmOIQlHWlMMq0QViHEoy3Xoym/'
