@@ -1,6 +1,5 @@
 # web driver
-#url: 'https://aicloud.sbercloud.ru'
-url: 'http://test.aicloud.sbercloud.ru/'
+url: 'http://test.ru/'
 implicit_timeout: 5
 window_size: 'maximize'
 
@@ -11,8 +10,8 @@ port:     '4444'
 path:     '/wd/hub'
 
 # any data
-username: 'aslagunkov@sbercloud.ru'
-password: 'Aslagunkov@sbercloud1'
+username: username
+password: password
 
 # caps
 capabilities:
